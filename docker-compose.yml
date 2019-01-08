@@ -1,0 +1,54 @@
+version: '3.7'
+
+networks:
+  retail-net:
+
+volumes:
+  db-data:
+  pgadmin-data:
+
+services:
+#  retail-backend-app:
+#    image: nkavtur/kms-demo-app:latest
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - retail-net
+#    restart: always
+#    deploy:
+#      mode: replicated
+#      replicas: 2
+#  retail-analytic-app:
+#    image: nkavtur/kms-demo-app:latest
+#    ports:
+#      - "8080:8080"
+#      networks:
+#        - retail-net
+#      restart: always
+#      deploy:
+#        mode: replicated
+#        replicas: 2
+  retail-db:
+    image: postgres:11.1
+    ports:
+      - "5432:5432"
+    networks:
+      - retail-net
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=admin
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=SuperSecret
+    restart: always
+    networks:
+      - retail-net
+    ports:
+      - "80:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
